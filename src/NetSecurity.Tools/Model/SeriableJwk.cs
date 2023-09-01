@@ -50,7 +50,7 @@ namespace NetSecurity.Tools.Model
 
         /// <summary>'oth' (RSA - Other Primes Info)</summary>
         [JsonPropertyName("oth")]
-        public IList<string> Oth { get; set; }
+        public IList<string>? Oth { get; set; }
 
         /// <summary>'p' (RSA - First Prime Factor)</summary>
         [JsonPropertyName("p")]
@@ -74,7 +74,7 @@ namespace NetSecurity.Tools.Model
 
         /// <summary>'x5c' collection (X.509 Certificate Chain)</summary>
         [JsonPropertyName("x5c")]
-        public IList<string> X5c { get; set; }
+        public IList<string>? X5c { get; set; }
 
         /// <summary>'x5t' (X.509 Certificate SHA-1 thumbprint)</summary>
         [JsonPropertyName("x5t")]
