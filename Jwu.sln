@@ -5,15 +5,12 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0009D92B-6E35-4E07-82E8-6886ACFC1721}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetSecurity.Tools", "src\NetSecurity.Tools\NetSecurity.Tools.csproj", "{21090B83-8782-4121-B484-FEE8BB2BFE6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jwu", "src\Jwu\Jwu.csproj", "{21090B83-8782-4121-B484-FEE8BB2BFE6E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{21090B83-8782-4121-B484-FEE8BB2BFE6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -21,7 +18,13 @@ Global
 		{21090B83-8782-4121-B484-FEE8BB2BFE6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21090B83-8782-4121-B484-FEE8BB2BFE6E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{21090B83-8782-4121-B484-FEE8BB2BFE6E} = {0009D92B-6E35-4E07-82E8-6886ACFC1721}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0FE5B4FD-87B3-4A74-B0B1-545ADC673F44}
 	EndGlobalSection
 EndGlobal

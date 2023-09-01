@@ -1,4 +1,4 @@
-﻿namespace NetSecurity.Tools.Exceptions;
+﻿namespace Jwu.Exceptions;
 
 public class ShouldNotHappenException : Exception
 {

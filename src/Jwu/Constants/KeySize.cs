@@ -1,4 +1,4 @@
-﻿namespace NetSecurity.Tools.Constants;
+﻿namespace Jwu.Constants;
 
 public enum KeySize
 {

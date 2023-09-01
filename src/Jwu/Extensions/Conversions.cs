@@ -1,11 +1,11 @@
-﻿using NetSecurity.Tools.Constants;
-using NetSecurity.Tools.Exceptions;
+﻿using Jwu.Constants;
+using Jwu.Exceptions;
 
-namespace NetSecurity.Tools.Extensions;
+namespace Jwu.Extensions;
 
 public static class Conversions
 {
-    public static string ToString(this KeyUse keyUse) 
+    public static string ToString(this KeyUse keyUse)
     {
         return keyUse switch
         {
@@ -15,12 +15,12 @@ public static class Conversions
         };
     }
 
-    public static string ToString(this KeyAlg keyAlg) 
+    public static string ToString(this KeyType keyAlg)
     {
         return keyAlg switch
         {
-            KeyAlg.EllipticCurve => "EC",
-            KeyAlg.Rsa => "RSA",
+            KeyType.EllipticCurve => "EC",
+            KeyType.Rsa => "RSA",
             _ => throw new ShouldNotHappenException()
         };
     }
