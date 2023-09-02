@@ -1,1 +1,1 @@
-# Jwu - Json Web key / token Utilities
+# Jwu - Json Web *k*eys and *t*okens Utilities
