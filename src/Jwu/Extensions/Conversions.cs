@@ -1,5 +1,6 @@
 ﻿using Jwu.Constants;
 using Jwu.Exceptions;
+using Jwu.Model;
 
 namespace Jwu.Extensions;
 

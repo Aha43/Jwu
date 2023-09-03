@@ -12,7 +12,7 @@ public sealed class JsonSerializableJwk
 {
     /// <summary>'alg' (KeyType)</summary>
     [JsonPropertyName("alg")]
-    public required string Alg { get; set; }
+    public string? Alg { get; set; }
 
     /// <summary>'crv' (ECC - Curve)</summary>
     [JsonPropertyName("crv")]
