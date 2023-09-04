@@ -10,30 +10,31 @@ public readonly struct JwtTime
 {
     public JwtTime() { }
 
-    public KeyPart KeyPart { get; init; } = KeyPart.None;
+    /// <summary>Tells if this JWT time is used in key parts.</summary>
+    public KeyPart KeyPart { get; init; }
 
     /// <summary>Time to pass from UTC now to the point in time this represent.</summary>
-    public int Time { get; init; } = 0;
+    public int Time { get; init; }
 
     /// <summary>Unit of Time.</summary>
-    public JwtTimeUnit TimeUnit { get; init; } = JwtTimeUnit.Year; 
-
-    /// <returns>UTC time from now to the point in time this represent</returns>
-    public readonly DateTimeOffset ToUtc()
+    public JwtTimeUnit TimeUnit { get; init; }
+    
+    /// <summary>Calculate point in time this represent from given date.</summary>
+    public readonly DateTimeOffset From(DateTimeOffset date)
     {
         return TimeUnit switch
         {
-            JwtTimeUnit.Year => DateTimeOffset.UtcNow.AddYears(Time),
-            JwtTimeUnit.Month => DateTimeOffset.UtcNow.AddMonths(Time),
-            JwtTimeUnit.Day => DateTimeOffset.UtcNow.AddDays(Time),
-            JwtTimeUnit.Hour => DateTimeOffset.UtcNow.AddHours(Time),
-            JwtTimeUnit.Minute => DateTimeOffset.UtcNow.AddMinutes(Time),
-            JwtTimeUnit.Second => DateTimeOffset.UtcNow.AddSeconds(Time),
+            JwtTimeUnit.Year => date.AddYears(Time),
+            JwtTimeUnit.Month => date.AddMonths(Time),
+            JwtTimeUnit.Day => date.AddDays(Time),
+            JwtTimeUnit.Hour => date.AddHours(Time),
+            JwtTimeUnit.Minute => date.AddMinutes(Time),
+            JwtTimeUnit.Second => date.AddSeconds(Time),
             _ => throw new ShouldNotHappenException()
         };
     }
 
-    /// <returns>Unixtime in seconds from now to the point in time this represent. This is the value used in JWT and JWK json</returns>
-    public readonly long ToUnixtimeSeconds() => ToUtc().ToUnixTimeSeconds();
+    /// <summary>Tells if defines time for key parts.</summary>
+    public bool RepresentKeyTime() => KeyPart != KeyPart.None && Time > 0;
 
 }

@@ -7,6 +7,9 @@ namespace Jwu.Model.Parameters;
 /// </summary>
 public sealed class CreateJwkParameter
 {
+    /// <summary>Key type to create. Default is RSA.</summary>
+    public KeyType KeyType { get; set; }
+
     /// <summary>Size of keys.</summary>
     public KeySize KeySize { get; init; } = KeySize.Bits2048;
 
@@ -26,9 +29,16 @@ public sealed class CreateJwkParameter
     public KeyPart IncludeIat { get; init; }
 
     /// <summary>Specifies if and where exp (expires) property is to be included in json produced.</summary>
-    public JwkTimeParameter Exp { get; init; }
+    public JwtTime Exp { get; init; }
 
     /// <summary>Specifies if and where nbf (not before) property is to be included in json produced.</summary>
-    public JwkTimeParameter Nbf { get; init; }
+    public JwtTime Nbf { get; init; }
 
+}
+
+public static class Extensions
+{
+
+    public static bool NeedTime(this CreateJwkParameter param) => 
+        param.IncludeIat != default || param.Exp.RepresentKeyTime() || param.Nbf.RepresentKeyTime();
 }

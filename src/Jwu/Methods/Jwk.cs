@@ -1,16 +1,48 @@
 ﻿using Jwu.Constants;
+using Jwu.Exceptions;
+using Jwu.Extensions;
 using Jwu.Model;
 using Jwu.Model.Parameters;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Jwu.Methods;
 
 public static class Jwk
 {
-    public static (JsonWebKey[] priv, JsonWebKey[] pub) CreateKeys(CreateJwkParameter param)
+    private static void CreateRsaKeys(CreateJwkParameter param, JsonWebKey[] privs, JsonWebKey[] pubs)
+    {
+        for (int i = 0; i < param.Count; i++)
+        {
+            using RSA rsa = RSA.Create(param.KeySize.ToInt());
+
+            var privKey = new RsaSecurityKey(rsa.ExportParameters(true));
+            var pubKey = new RsaSecurityKey(rsa.ExportParameters(false));
+
+            privs[i] = JsonWebKeyConverter.ConvertFromRSASecurityKey(privKey);
+            pubs[i] = JsonWebKeyConverter.ConvertFromRSASecurityKey(pubKey);
+        }
+    }
+
+    private static void CreateEllipticKeys(CreateJwkParameter param, JsonWebKey[] privs, JsonWebKey[] pubs)
     {
         throw new NotImplementedException();
+    }
+
+    public static (JsonWebKey[] priv, JsonWebKey[] pub) CreateKeys(CreateJwkParameter param)
+    {
+        var privs = new JsonWebKey[param.Count];
+        var pubs = new JsonWebKey[param.Count];
+
+        switch (param.KeyType)
+        {
+            case KeyType.Rsa: CreateRsaKeys(param, privs, pubs); break;
+            case KeyType.EllipticCurve: CreateEllipticKeys(param, privs, pubs); break;
+            default: throw new ShouldNotHappenException();
+        }
+
+        return (privs, pubs);
     }
 
     public static (JsonSerializableJwk[] priv, JsonSerializableJwk[] pub) CreateSerializableKeys(CreateJwkParameter param)
