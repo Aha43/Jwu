@@ -11,9 +11,9 @@ namespace Jwu.Methods;
 
 public static class Jwk
 {
-    private static void CreateRsaKeys(CreateJwkParameter param, JsonWebKey[] privs, JsonWebKey[] pubs)
+    private static void CreateRsaKeys(CreateJwkParameter param, JsonWebKey[] privs, JsonWebKey[] pubs, int n)
     {
-        for (int i = 0; i < param.Count; i++)
+        for (int i = 0; i < n; i++)
         {
             using RSA rsa = RSA.Create(param.KeySize.ToInt());
 
@@ -30,14 +30,21 @@ public static class Jwk
         throw new NotImplementedException();
     }
 
-    public static (JsonWebKey[] priv, JsonWebKey[] pub) CreateKeys(CreateJwkParameter param)
+    public static (JsonWebKey[] priv, JsonWebKey[] pub) CreateKeys(CreateJwkParameter? param = null, int n = 1)
     {
-        var privs = new JsonWebKey[param.Count];
-        var pubs = new JsonWebKey[param.Count];
+        if (n < 0)
+        {
+            throw new ArgumentOutOfRangeException($"{nameof(n)} < 0 : {n}");
+        }
+
+        param ??= new();
+
+        var privs = new JsonWebKey[n];
+        var pubs = new JsonWebKey[n];
 
         switch (param.KeyType)
         {
-            case KeyType.Rsa: CreateRsaKeys(param, privs, pubs); break;
+            case KeyType.Rsa: CreateRsaKeys(param, privs, pubs, n); break;
             case KeyType.EllipticCurve: CreateEllipticKeys(param, privs, pubs); break;
             default: throw new ShouldNotHappenException();
         }
@@ -45,28 +52,32 @@ public static class Jwk
         return (privs, pubs);
     }
 
-    public static (JsonSerializableJwk[] priv, JsonSerializableJwk[] pub) CreateSerializableKeys(CreateJwkParameter param)
+    public static (JsonSerializableJwk[] priv, JsonSerializableJwk[] pub) CreateSerializableKeys(CreateJwkParameter? param = null, int n = 1)
     {
-        var (priv, pub) = CreateKeys(param);
-        var privSer = priv.Select(e => new JsonSerializableJwk(e)).ToArray();
-        var pubSer = pub.Select(e => new JsonSerializableJwk(e)).ToArray();
+        var (priv, pub) = CreateKeys(param, n);
+        var privSer = priv.Select(e => JsonSerializableJwk.FromJsonWebKey(e)).ToArray();
+        var pubSer = pub.Select(e => JsonSerializableJwk.FromJsonWebKey(e)).ToArray();
         return (privSer, pubSer);
     }
    
-    public static (string privJson, string pubJson) CreateKeysJson(CreateJwkParameter param)
+    public static (string privJson, string pubJson) CreateKeysJson(CreateJwkParameter? param = null, int n = 1)
     {
-        var (priv, pub) = CreateSerializableKeys(param);
+        param ??= new();
+
+        var (priv, pub) = CreateSerializableKeys(param, n);
 
         var privSb = new StringBuilder();
         var pubSb = new StringBuilder();
 
-        var privArray = MakePrivateArray(param);
-        var pubArray = MakePublicArray(param);
+        
+
+        var privArray = MakePrivateArray(param, n);
+        var pubArray = MakePublicArray(param, n);
 
         if (privArray) privSb.AppendLine("[");
         if (pubArray) pubSb.AppendLine("[");
 
-        for (int i = 0; i < param.Count; i++)
+        for (int i = 0; i < n; i++)
         {
             if (i > 0)
             {
@@ -84,10 +95,10 @@ public static class Jwk
         return (privSb.ToString(), pubSb.ToString());
     }
 
-    private static bool MakePrivateArray(CreateJwkParameter param) =>
-        param.Count > 1 || param.ForceArray == KeyPart.Private || param.ForceArray == KeyPart.Both;
+    private static bool MakePrivateArray(CreateJwkParameter param, int n) =>
+        n > 1 || param.ForceArray == KeyPart.Private || param.ForceArray == KeyPart.Both;
 
-    private static bool MakePublicArray(CreateJwkParameter param) =>
-        param.Count > 1 || param.ForceArray == KeyPart.Public || param.ForceArray == KeyPart.Both;
+    private static bool MakePublicArray(CreateJwkParameter param, int n) =>
+        n > 1 || param.ForceArray == KeyPart.Public || param.ForceArray == KeyPart.Both;
 
 }

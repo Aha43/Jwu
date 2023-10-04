@@ -1,4 +1,6 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Jwu.Exceptions;
+using Jwu.Methods;
+using Microsoft.IdentityModel.Tokens;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -98,34 +100,6 @@ public sealed class JsonSerializableJwk
     [JsonPropertyName("y")]
     public string? Y { get; set; }
 
-    public JsonSerializableJwk() { }
-
-    public JsonSerializableJwk(JsonWebKey jwk)
-    {
-        Alg = jwk.Alg;
-        Crv = jwk.Crv;
-        D = jwk.D;
-        DP = jwk.DP;
-        DQ = jwk.DQ;
-        E = jwk.E;
-        K = jwk.K;
-        KeyOps = jwk.KeyOps?.Count > 0 ? jwk.KeyOps : null;
-        Kid = jwk.Kid;
-        Kty = jwk.Kty;
-        N = jwk.N;
-        Oth = jwk.Oth;
-        P = jwk.P;
-        Q = jwk.Q;
-        QI = jwk.QI;
-        Use = jwk.Use;
-        X = jwk.X;
-        Y = jwk.Y;
-        X5c = jwk.X5c?.Count > 0 ? jwk.X5c : null;
-        X5t = jwk.X5t;
-        X5u = jwk.X5u;
-        X5tS256 = jwk.X5tS256;
-    }
-
     //
     // Extra "JWT" properties, not specified by the RFC but is used by application. Not part of JsonWebKey type.
     //
@@ -144,9 +118,6 @@ public sealed class JsonSerializableJwk
 
     public override string ToString() => ToJson();
 
-    /// <summary>
-    /// To Json
-    /// </summary>
     /// <returns>Json</returns>
     public string ToJson()
     {
@@ -154,15 +125,47 @@ public sealed class JsonSerializableJwk
         return retVal;
     }
 
-    /// <summary>
-    /// To JsonWebKey
-    /// </summary>
+    public static JsonSerializableJwk FromJson(string json)
+    {
+        var retVal = JsonSerializer.Deserialize<JsonSerializableJwk>(json);
+        return retVal ?? throw new ShouldNotHappenException();
+    }
+
     /// <returns>JsonWebKey</returns>
     public JsonWebKey ToJsonWebKey()
     {
         var json = ToJson();
         var retVal = new JsonWebKey(json);
         return retVal;
+    }
+
+    public static JsonSerializableJwk FromJsonWebKey(JsonWebKey jwk)
+    {
+        return new JsonSerializableJwk
+        {
+            Alg = jwk.Alg,
+            Crv = jwk.Crv,
+            D = jwk.D,
+            DP = jwk.DP,
+            DQ = jwk.DQ,
+            E = jwk.E,
+            K = jwk.K,
+            KeyOps = jwk.KeyOps?.Count > 0 ? jwk.KeyOps : null,
+            Kid = jwk.Kid,
+            Kty = jwk.Kty,
+            N = jwk.N,
+            Oth = jwk.Oth,
+            P = jwk.P,
+            Q = jwk.Q,
+            QI = jwk.QI,
+            Use = jwk.Use,
+            X = jwk.X,
+            Y = jwk.Y,
+            X5c = jwk.X5c?.Count > 0 ? jwk.X5c : null,
+            X5t = jwk.X5t,
+            X5u = jwk.X5u,
+            X5tS256 = jwk.X5tS256
+        };
     }
 
     private static readonly JsonSerializerOptions Options = new()

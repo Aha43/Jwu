@@ -19,9 +19,6 @@ public sealed class CreateJwkParameter
     /// <summary>Use of keys. Default is "sig".</summary>
     public KeyUse Use { get; init; } = KeyUse.Signature;
 
-    /// <summary>Number of keys to generate. Default is 1.</summary>
-    public uint Count { get; init; } = 1;
-
     /// <summary>Output keys in a json array even if generating only one key for the specified parts. No effect if Count > 1 (then output is always array). Default is true.</summary>
     public KeyPart ForceArray { get; init; }
 
