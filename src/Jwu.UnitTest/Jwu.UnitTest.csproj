@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Jwu.XunitAssertions\Jwu.XunitAssertions.csproj" />
     <ProjectReference Include="..\Jwu\Jwu.csproj" />
   </ItemGroup>
 
