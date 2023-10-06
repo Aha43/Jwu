@@ -19,7 +19,7 @@ namespace Jwu.UnitTest
             var pubKey = pub[0];
             Assert.NotNull(pubKey);
 
-            JwuAsserions.IsPair(privKey, pubKey);
+            JwuAssertions.IsPair(privKey, pubKey);
         }
 
     }
