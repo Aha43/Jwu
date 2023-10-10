@@ -1,7 +1,5 @@
 ﻿using Jwu.Exceptions;
-using Jwu.Methods;
 using Microsoft.IdentityModel.Tokens;
-using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -10,7 +8,7 @@ namespace Jwu.Model;
 /// <summary>
 /// Json serializable representation of a Json Web Key (JWK)
 /// </summary>
-public sealed class JsonSerializableJwk
+public sealed class Jwk
 {
     /// <summary>'alg' (KeyType)</summary>
     [JsonPropertyName("alg")]
@@ -46,7 +44,7 @@ public sealed class JsonSerializableJwk
 
     /// <summary>'kid' (Key ID)</summary>
     [JsonPropertyName("kid")]
-    public string? Kid { get; set; }
+    public required string Kid { get; set; }
 
     /// <summary>'kty' (Key Type)</summary>
     [JsonPropertyName("kty")]
@@ -116,18 +114,25 @@ public sealed class JsonSerializableJwk
     [JsonPropertyName("nbf")]
     public long? Nbf { get; set; }
 
+    // Ensure has kid
+    public Jwk() => Kid = Guid.NewGuid().ToString();
+
     public override string ToString() => ToJson();
 
     /// <returns>Json</returns>
-    public string ToJson()
+    public string ToJson(bool pretty = false)
     {
-        var retVal = JsonSerializer.Serialize(this, Options);
+        var retVal = JsonSerializer.Serialize(this, new JsonSerializerOptions 
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            WriteIndented = pretty
+        });
         return retVal;
     }
 
-    public static JsonSerializableJwk FromJson(string json)
+    public static Jwk FromJson(string json)
     {
-        var retVal = JsonSerializer.Deserialize<JsonSerializableJwk>(json);
+        var retVal = JsonSerializer.Deserialize<Jwk>(json);
         return retVal ?? throw new ShouldNotHappenException();
     }
 
@@ -139,9 +144,9 @@ public sealed class JsonSerializableJwk
         return retVal;
     }
 
-    public static JsonSerializableJwk FromJsonWebKey(JsonWebKey jwk)
+    public static Jwk FromJsonWebKey(JsonWebKey jwk)
     {
-        return new JsonSerializableJwk
+        return new Jwk
         {
             Alg = jwk.Alg,
             Crv = jwk.Crv,
@@ -167,10 +172,5 @@ public sealed class JsonSerializableJwk
             X5tS256 = jwk.X5tS256
         };
     }
-
-    private static readonly JsonSerializerOptions Options = new()
-    {
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-    };
 
 }

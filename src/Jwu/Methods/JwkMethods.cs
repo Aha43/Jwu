@@ -5,11 +5,12 @@ using Jwu.Model;
 using Jwu.Model.Parameters;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
-using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Jwu.Methods;
 
-public static class Jwk
+public static class JwkMethods
 {
     private static void CreateRsaKeys(CreateJwkParameter param, JsonWebKey[] privs, JsonWebKey[] pubs, int n)
     {
@@ -52,11 +53,11 @@ public static class Jwk
         return (privs, pubs);
     }
 
-    public static (JsonSerializableJwk[] priv, JsonSerializableJwk[] pub) CreateSerializableKeys(CreateJwkParameter? param = null, int n = 1)
+    public static (Jwk[] priv, Jwk[] pub) CreateSerializableKeys(CreateJwkParameter? param = null, int n = 1)
     {
         var (priv, pub) = CreateKeys(param, n);
-        var privSer = priv.Select(e => JsonSerializableJwk.FromJsonWebKey(e)).ToArray();
-        var pubSer = pub.Select(e => JsonSerializableJwk.FromJsonWebKey(e)).ToArray();
+        var privSer = priv.Select(e => Jwk.FromJsonWebKey(e)).ToArray();
+        var pubSer = pub.Select(e => Jwk.FromJsonWebKey(e)).ToArray();
         return (privSer, pubSer);
     }
    
@@ -66,33 +67,53 @@ public static class Jwk
 
         var (priv, pub) = CreateSerializableKeys(param, n);
 
-        var privSb = new StringBuilder();
-        var pubSb = new StringBuilder();
-
-        
-
-        var privArray = MakePrivateArray(param, n);
-        var pubArray = MakePublicArray(param, n);
-
-        if (privArray) privSb.AppendLine("[");
-        if (pubArray) pubSb.AppendLine("[");
-
-        for (int i = 0; i < n; i++)
+        var privs = new Jwks
         {
-            if (i > 0)
-            {
-                privSb.AppendLine(",");
-                pubSb.AppendLine(",");
-            }
+            Keys = priv
+        };
+        var pubs = new Jwks
+        {
+            Keys = pub
+        };
 
-            privSb.Append(priv[i].ToJson());
-            pubSb.Append(pub[i].ToJson());
-        }
+        var o = new JsonSerializerOptions
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            WriteIndented = true
+        };
 
-        if (privArray) privSb.AppendLine("]");
-        if (pubArray) pubSb.AppendLine("]");
+        var prj = JsonSerializer.Serialize(privs, o);
+        var puj = JsonSerializer.Serialize(pubs, o);
+        return (prj, puj);
 
-        return (privSb.ToString(), pubSb.ToString());
+        //var privSb = new StringBuilder();
+        //var pubSb = new StringBuilder();
+
+        //var privArray = MakePrivateArray(param, n);
+        //var pubArray = MakePublicArray(param, n);
+
+        //if (privArray) privSb.AppendLine("[");
+        //if (pubArray) pubSb.AppendLine("[");
+
+        //for (int i = 0; i < n; i++)
+        //{
+        //    if (i > 0)
+        //    {
+        //        privSb.AppendLine(",");
+        //        pubSb.AppendLine(",");
+        //    }
+
+        //    privSb.Append(priv[i].ToJson());
+        //    pubSb.Append(pub[i].ToJson());
+        //}
+
+        //privSb.AppendLine();
+        //pubSb.AppendLine();
+
+        //if (privArray) privSb.AppendLine("]");
+        //if (pubArray) pubSb.AppendLine("]");
+
+        //return (privSb.ToString(), pubSb.ToString());
     }
 
     private static bool MakePrivateArray(CreateJwkParameter param, int n) =>

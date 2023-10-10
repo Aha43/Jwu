@@ -8,7 +8,7 @@ namespace Jwu.UnitTest
         [Fact]
         public void CreatingSingleDefaultJwkShouldWork()
         {
-            var (priv, pub) = Jwk.CreateKeys();
+            var (priv, pub) = JwkMethods.CreateKeys();
 
             Assert.Single(priv);
             Assert.Single(pub);
