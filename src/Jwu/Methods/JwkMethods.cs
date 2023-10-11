@@ -18,11 +18,16 @@ public static class JwkMethods
         {
             using RSA rsa = RSA.Create(param.KeySize.ToInt());
 
+            var kid = Guid.NewGuid().ToString();
+
             var privKey = new RsaSecurityKey(rsa.ExportParameters(true));
             var pubKey = new RsaSecurityKey(rsa.ExportParameters(false));
 
             privs[i] = JsonWebKeyConverter.ConvertFromRSASecurityKey(privKey);
             pubs[i] = JsonWebKeyConverter.ConvertFromRSASecurityKey(pubKey);
+
+            privs[i].KeyId = kid;
+            pubs[i].KeyId = kid;
         }
     }
 
@@ -76,14 +81,20 @@ public static class JwkMethods
             Keys = pub
         };
 
-        var o = new JsonSerializerOptions
+        var opriv = new JsonSerializerOptions
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            WriteIndented = true
+            WriteIndented = param.PrettyJson == KeyPart.Private || param.PrettyJson == KeyPart.Both
+        };
+        var opub = new JsonSerializerOptions
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            WriteIndented = param.PrettyJson == KeyPart.Private || param.PrettyJson == KeyPart.Both
         };
 
-        var prj = JsonSerializer.Serialize(privs, o);
-        var puj = JsonSerializer.Serialize(pubs, o);
+        var prj = JsonSerializer.Serialize(privs, opriv);
+        var puj = JsonSerializer.Serialize(pubs, opub);
+
         return (prj, puj);
 
         //var privSb = new StringBuilder();

@@ -31,6 +31,9 @@ public sealed class CreateJwkParameter
     /// <summary>Specifies if and where nbf (not before) property is to be included in json produced.</summary>
     public JwtTime Nbf { get; init; }
 
+    /// <summary>Specify parts of key should be pretty json (indented), default is none.</summary>
+    public KeyPart PrettyJson { get; init; }
+
 }
 
 public static class Extensions

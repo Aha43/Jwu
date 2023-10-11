@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Jwu.Cli": {
+      "commandName": "Project",
+      "commandLineArgs": "jwkcreate -n 1 -v"
+    }
+  }
+}

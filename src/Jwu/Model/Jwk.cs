@@ -114,9 +114,6 @@ public sealed class Jwk
     [JsonPropertyName("nbf")]
     public long? Nbf { get; set; }
 
-    // Ensure has kid
-    public Jwk() => Kid = Guid.NewGuid().ToString();
-
     public override string ToString() => ToJson();
 
     /// <returns>Json</returns>
@@ -156,7 +153,7 @@ public sealed class Jwk
             E = jwk.E,
             K = jwk.K,
             KeyOps = jwk.KeyOps?.Count > 0 ? jwk.KeyOps : null,
-            Kid = jwk.Kid,
+            Kid = jwk.KeyId,
             Kty = jwk.Kty,
             N = jwk.N,
             Oth = jwk.Oth,
