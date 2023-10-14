@@ -19,8 +19,14 @@ public sealed class CreateJwkParameter
     /// <summary>Use of keys. Default is "sig".</summary>
     public KeyUse Use { get; init; } = KeyUse.Signature;
 
-    /// <summary>Output keys in a json array even if generating only one key for the specified parts. No effect if Count > 1 (then output is always array). Default is true.</summary>
-    public KeyPart ForceArray { get; init; }
+    /// <summary>Output key not in a json when generating only one key for the specified parts. No effect if Count > 1 (then output is always array). Default is none.</summary>
+    public KeyPart ForceSingle { get; init; }
+
+    /// <summary>Which key parts to output in the jwks (json web key set). Default is none</summary>
+    public KeyPart Jwks { get; init; }
+
+    /// <summary>If true generate kid for keys, default is false.</summary>
+    public bool IncludeKid { get; init; }
 
     /// <summary>Include Json Web Token (JWT) type claim "issued at" (iat). Default is false. If true the value will be UTC time when key created in UNIX time (seconds).</summary>
     public KeyPart IncludeIat { get; init; }

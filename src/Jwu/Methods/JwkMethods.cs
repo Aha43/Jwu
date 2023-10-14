@@ -18,22 +18,33 @@ public static class JwkMethods
         {
             using RSA rsa = RSA.Create(param.KeySize.ToInt());
 
-            var kid = Guid.NewGuid().ToString();
-
             var privKey = new RsaSecurityKey(rsa.ExportParameters(true));
             var pubKey = new RsaSecurityKey(rsa.ExportParameters(false));
 
             privs[i] = JsonWebKeyConverter.ConvertFromRSASecurityKey(privKey);
-            pubs[i] = JsonWebKeyConverter.ConvertFromRSASecurityKey(pubKey);
-
-            privs[i].KeyId = kid;
-            pubs[i].KeyId = kid;
+            pubs[i] = JsonWebKeyConverter.ConvertFromRSASecurityKey(pubKey);   
         }
+
+        CommonPostCreation(privs, pubs, param);
     }
 
     private static void CreateEllipticKeys(CreateJwkParameter param, JsonWebKey[] privs, JsonWebKey[] pubs)
     {
         throw new NotImplementedException();
+    }
+
+    private static void CommonPostCreation(JsonWebKey[] privs, JsonWebKey[] pubs, CreateJwkParameter param)
+    {
+        int n = privs.Length;
+        for (int i = 0; i < n; i++) 
+        {
+            if (param.IncludeKid || param.Jwks != KeyPart.None)
+            {
+                var kid = Guid.NewGuid().ToString();
+                privs[i].KeyId = kid;
+                pubs[i].KeyId = kid;
+            }
+        }
     }
 
     public static (JsonWebKey[] priv, JsonWebKey[] pub) CreateKeys(CreateJwkParameter? param = null, int n = 1)
@@ -72,14 +83,15 @@ public static class JwkMethods
 
         var (priv, pub) = CreateSerializableKeys(param, n);
 
-        var privs = new Jwks
-        {
-            Keys = priv
-        };
-        var pubs = new Jwks
-        {
-            Keys = pub
-        };
+        object pubSer = pub;
+        if (MakePublicSingle(param, n)) pubSer = pub[0];
+
+        object privSer = priv;
+        if (MakePrivateSingle(param, n)) privSer = priv[0];
+
+        if (param.Jwks == KeyPart.Public || param.Jwks == KeyPart.Both) pubSer = new Jwks { Keys = pub };
+
+        if (param.Jwks == KeyPart.Private || param.Jwks == KeyPart.Both) privSer = new Jwks { Keys = priv };
 
         var opriv = new JsonSerializerOptions
         {
@@ -92,45 +104,22 @@ public static class JwkMethods
             WriteIndented = param.PrettyJson == KeyPart.Private || param.PrettyJson == KeyPart.Both
         };
 
-        var prj = JsonSerializer.Serialize(privs, opriv);
-        var puj = JsonSerializer.Serialize(pubs, opub);
+        var prj = JsonSerializer.Serialize(privSer, opriv);
+        var puj = JsonSerializer.Serialize(pubSer, opub);
 
         return (prj, puj);
-
-        //var privSb = new StringBuilder();
-        //var pubSb = new StringBuilder();
-
-        //var privArray = MakePrivateArray(param, n);
-        //var pubArray = MakePublicArray(param, n);
-
-        //if (privArray) privSb.AppendLine("[");
-        //if (pubArray) pubSb.AppendLine("[");
-
-        //for (int i = 0; i < n; i++)
-        //{
-        //    if (i > 0)
-        //    {
-        //        privSb.AppendLine(",");
-        //        pubSb.AppendLine(",");
-        //    }
-
-        //    privSb.Append(priv[i].ToJson());
-        //    pubSb.Append(pub[i].ToJson());
-        //}
-
-        //privSb.AppendLine();
-        //pubSb.AppendLine();
-
-        //if (privArray) privSb.AppendLine("]");
-        //if (pubArray) pubSb.AppendLine("]");
-
-        //return (privSb.ToString(), pubSb.ToString());
     }
 
-    private static bool MakePrivateArray(CreateJwkParameter param, int n) =>
-        n > 1 || param.ForceArray == KeyPart.Private || param.ForceArray == KeyPart.Both;
+    private static bool MakePrivateSingle(CreateJwkParameter param, int n)
+    {
+        if (n > 1) return false;
+        return param.ForceSingle == KeyPart.Private || param.ForceSingle == KeyPart.Both;
+    }
 
-    private static bool MakePublicArray(CreateJwkParameter param, int n) =>
-        n > 1 || param.ForceArray == KeyPart.Public || param.ForceArray == KeyPart.Both;
+    private static bool MakePublicSingle(CreateJwkParameter param, int n)
+    {
+        if (n > 1) return false;
+        return param.ForceSingle == KeyPart.Public || param.ForceSingle == KeyPart.Both;
+    }
 
 }
