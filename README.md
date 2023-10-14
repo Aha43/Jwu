@@ -1,1 +1,1 @@
-# Jwu - Json Web Signature (JWS) utilities
+# Jwu - Json Web Signature (JWS) utilities 
