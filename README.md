@@ -1,1 +1,1 @@
-# Jwu - Json Web *k*eys and *t*okens Utilities
+# Jwu - Json Web Signature (JWS) utilities
