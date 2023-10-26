@@ -2,7 +2,7 @@
   "profiles": {
     "Jwu.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "jwkcreate -n 1 -v"
+      "commandLineArgs": "jwkcreate -n 1 -v --jwks-output b --pretty-output r"
     }
   }
 }

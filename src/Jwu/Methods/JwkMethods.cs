@@ -101,7 +101,7 @@ public static class JwkMethods
         var opub = new JsonSerializerOptions
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            WriteIndented = param.PrettyJson == KeyPart.Private || param.PrettyJson == KeyPart.Both
+            WriteIndented = param.PrettyJson == KeyPart.Public || param.PrettyJson == KeyPart.Both
         };
 
         var prj = JsonSerializer.Serialize(privSer, opriv);
