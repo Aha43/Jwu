@@ -39,7 +39,7 @@ internal class JwkCreateOptions : JwkBaseOptions
         string containing 'b': both public key and private keys in jwks format")]
     public string Pretty { get; set; } = string.Empty;
 
-    [Option("kid", Required = false, HelpText = "If to create key id (kid) for generated keys. Optional: default is not to but kid is always created if outputting in the jwks format.")]
+    [Option("kid", Required = false, HelpText = "If to create key id (kid) for generated keys. Optional: default is not to but kid is always created if output in the jwks format.")]
     public bool Kid { get; set; } = false;
 
     [Option('d', "destination", Required = false, HelpText = "Destination for file to write keys to: 'private.json' is added to get file path for private keys and 'public.json' is added to get file path for public keys")]
