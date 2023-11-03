@@ -81,6 +81,23 @@ internal static class JwkCreate
                 var privateFile = o.Destination + ".private.json";
                 var publicFile = o.Destination + ".public.json";
 
+                if (o.Verbose)
+                {
+                    Console.WriteLine("Private keys written to: " + privateFile);
+                    Console.WriteLine("Public keys written to: " + publicFile);
+                }
+
+                if (!File.Exists(privateFile))
+                {
+                    File.Create(privateFile);
+                }                
+
+                if (!File.Exists(publicFile))
+                {
+                    
+                    File.Create(publicFile);
+                }
+
                 File.WriteAllText(privateFile, privJson);
                 File.WriteAllText(publicFile, pubJson);
             }
