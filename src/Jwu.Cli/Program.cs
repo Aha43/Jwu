@@ -1,6 +1,7 @@
 ﻿using CommandLine;
 using Jwu.Cli;
 using System.Reflection;
+using Jwu.Exceptions;
 
 var types = LoadVerbs();
 
@@ -13,6 +14,7 @@ static void Run(object obj)
     switch (obj)
     {
         case JwkCreateOptions o: exit = JwkCreate.Perform(o); break;
+        default: throw new ShouldNotHappenException();
     }
 
     Environment.Exit(exit);
