@@ -1,4 +1,5 @@
-﻿using CommandLine;
+﻿using System.Text;
+using CommandLine;
 using Jwu.Constants;
 using Jwu.Exceptions;
 using Jwu.Methods;
@@ -78,8 +79,7 @@ internal static class JwkCreate
 
             if (o.Destination != null) 
             {
-                var privateFile = o.Destination + ".private.json";
-                var publicFile = o.Destination + ".public.json";
+                var (publicFile, privateFile) = GetOutputFiles(param, pubJson, privJson);
 
                 File.WriteAllText(privateFile, privJson);
                 File.WriteAllText(publicFile, pubJson);
@@ -101,6 +101,49 @@ internal static class JwkCreate
         if (cliArg.IndexOf('u') != -1) return KeyPart.Public;
         if (cliArg.IndexOf('r') != -1) return KeyPart.Private;
         return KeyPart.None;
+    }
+
+    private static (string pubFile, string privFile) GetOutputFiles(CreateJwkParameter param,  string pubJson, string privJson)
+    {
+        var pubFile = string.Empty;
+        var privFile = string.Empty;
+
+        var pubSb = new StringBuilder("public");
+        var privSb = new StringBuilder("private");
+
+        if (param.Jwks == KeyPart.Public || param.Jwks == KeyPart.Both) 
+        {
+            pubFile = pubSb.Append(".jwks").Append(".json").ToString();
+        }
+        else if (param.Jwks == KeyPart.Private || param.Jwks == KeyPart.Both)
+        {
+            privFile = privSb.Append(".jwks").Append(".json").ToString();
+        }
+        
+        if (pubFile.Length == 0)
+        {
+            if (pubJson.StartsWith("["))
+            {
+                pubFile = pubSb.Append("keys.json").ToString();
+            }
+            else
+            {
+                pubFile = pubSb.Append("key.json").ToString();
+            }
+        }
+        if (privFile.Length == 0)
+        {
+            if (privJson.StartsWith("["))
+            {
+                privFile = privSb.Append("keys.json").ToString();
+            }
+            else
+            {
+                privFile = privSb.Append("key.json").ToString();
+            }
+        }
+        
+        return (pubFile, privFile);
     }
 
 }

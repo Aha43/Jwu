@@ -2,7 +2,11 @@
   "profiles": {
     "Jwu.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "jwkcreate -n 1 -v --jwks-output b --pretty-output r"
+      "commandLineArgs": "jwkcreate -n 1 -v --jwks-output b --pretty-output r -d C:\\maskinportenkeys"
+    },
+    "Jwu.Cli.help": {
+      "commandName": "Project",
+      "commandLineArgs": "jwkcreate --help"
     }
   }
 }
