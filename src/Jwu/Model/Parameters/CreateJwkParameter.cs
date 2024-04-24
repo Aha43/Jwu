@@ -7,6 +7,9 @@ namespace Jwu.Model.Parameters;
 /// </summary>
 public sealed class CreateJwkParameter
 {
+    /// <summary>Number of keys ro create with this paramater. Default is 1.</summary>
+    public uint Number { get; set; } = 1;
+
     /// <summary>Key type to create. Default is RSA.</summary>
     public KeyType KeyType { get; set; }
 

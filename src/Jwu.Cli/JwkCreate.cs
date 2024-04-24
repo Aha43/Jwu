@@ -17,7 +17,7 @@ internal class JwkBaseOptions
 internal class JwkCreateOptions : JwkBaseOptions
 {
     [Option('n', "number", Required = false, HelpText = "Number of keys to create, optional: default is 1")]
-    public int Number { get; set; } = 1;
+    public uint Number { get; set; } = 1;
 
     [Option("no-array-output", Required = false, HelpText = @"Tell non jwks format output: 
         string that does not contain 'u', 'r' or 'b': (default): array,

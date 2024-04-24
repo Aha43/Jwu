@@ -13,7 +13,7 @@ namespace Jwu.Methods;
 
 public static class JwkMethods
 {
-    private static void CreateRsaKeys(CreateJwkParameter param, JsonWebKey[] privs, JsonWebKey[] pubs, int n)
+    private static void CreateRsaKeys(CreateJwkParameter param, JsonWebKey[] privs, JsonWebKey[] pubs, uint n)
     {
         for (int i = 0; i < n; i++)
         {
@@ -48,7 +48,7 @@ public static class JwkMethods
         }
     }
 
-    public static (JsonWebKey[] priv, JsonWebKey[] pub) CreateKeys(CreateJwkParameter? param = null, int n = 1)
+    public static (JsonWebKey[] priv, JsonWebKey[] pub) CreateKeys(CreateJwkParameter? param = null, uint n = 1)
     {
         if (n < 0)
         {
@@ -70,7 +70,7 @@ public static class JwkMethods
         return (privs, pubs);
     }
 
-    public static (Jwk[] priv, Jwk[] pub) CreateSerializableKeys(CreateJwkParameter? param = null, int n = 1)
+    public static (Jwk[] priv, Jwk[] pub) CreateSerializableKeys(CreateJwkParameter? param = null, uint n = 1)
     {
         var (priv, pub) = CreateKeys(param, n);
         var privSer = priv.Select(e => Jwk.FromJsonWebKey(e)).ToArray();
@@ -78,7 +78,7 @@ public static class JwkMethods
         return (privSer, pubSer);
     }
    
-    public static (string privJson, string pubJson) CreateKeysJson(CreateJwkParameter? param = null, int n = 1)
+    public static (string privJson, string pubJson) CreateKeysJson(CreateJwkParameter? param = null, uint n = 1)
     {
         param ??= new();
 
@@ -111,13 +111,13 @@ public static class JwkMethods
         return (prj, puj);
     }
 
-    private static bool MakePrivateSingle(CreateJwkParameter param, int n)
+    private static bool MakePrivateSingle(CreateJwkParameter param, uint n)
     {
         if (n > 1) return false;
         return param.ForceSingle == KeyPart.Private || param.ForceSingle == KeyPart.Both;
     }
 
-    private static bool MakePublicSingle(CreateJwkParameter param, int n)
+    private static bool MakePublicSingle(CreateJwkParameter param, uint n)
     {
         if (n > 1) return false;
         return param.ForceSingle == KeyPart.Public || param.ForceSingle == KeyPart.Both;
