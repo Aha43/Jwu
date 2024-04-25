@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/../EplComputations" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../JCli" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../JsCliCs" vcs="Git" />
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../LearnJs" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../NextActionMaster" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../TimeSeriesLab" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../Tsm" vcs="Git" />
   </component>
 </project>

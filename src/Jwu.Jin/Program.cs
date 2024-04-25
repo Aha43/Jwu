@@ -23,9 +23,19 @@ if (command != "Create")
     return;
 }
 
-var jsonPath = args[1];
-var json = File.ReadAllText(jsonPath);
-var param = JsonSerializer.Deserialize<CreateJwkParameter>(json);
+CreateJwkParameter? param;
+
+if (args.Length == 2)
+{
+    var jsonPath = args[1];
+    var json = File.ReadAllText(jsonPath);
+    param = JsonSerializer.Deserialize<CreateJwkParameter>(json);    
+}
+else
+{
+    param = new();
+}
+
 
 if (param == null)
 {
