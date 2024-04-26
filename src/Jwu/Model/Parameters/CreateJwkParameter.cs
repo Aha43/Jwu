@@ -7,11 +7,17 @@ namespace Jwu.Model.Parameters;
 /// </summary>
 public sealed class CreateJwkParameter
 {
-    /// <summary>Number of keys ro create with this paramater. Default is 1.</summary>
-    public uint Number { get; set; } = 1;
+    /// <summary>File path to file to write generated private keys. If null do not write to file.</summary>
+    public string? PrivateKeysOutputFilePath { get; init; }
+    
+    /// <summary>File path to file to write generated public keys. If null do not write to file.</summary>
+    public string? PublicKeysOutputFilePath { get; init; }
+    
+    /// <summary>Number of keys to create with this parameter. Default is 1.</summary>
+    public uint Number { get; init; } = 1;
 
     /// <summary>Key type to create. Default is RSA.</summary>
-    public KeyType KeyType { get; set; }
+    public KeyType KeyType { get; init; }
 
     /// <summary>Size of keys.</summary>
     public KeySize KeySize { get; init; } = KeySize.Bits2048;
@@ -22,7 +28,7 @@ public sealed class CreateJwkParameter
     /// <summary>Use of keys. Default is "sig".</summary>
     public KeyUse Use { get; init; } = KeyUse.Signature;
 
-    /// <summary>Output key not in a json when generating only one key for the specified parts. No effect if Count > 1 (then output is always array). Default is none.</summary>
+    /// <summary>Output key not in a json array when generating only one key for the specified parts. No effect if Count > 1 (then output is always array). Default is none.</summary>
     public KeyPart ForceSingle { get; init; }
 
     /// <summary>Which key parts to output in the jwks (json web key set). Default is none</summary>
@@ -47,7 +53,6 @@ public sealed class CreateJwkParameter
 
 public static class Extensions
 {
-
     public static bool NeedTime(this CreateJwkParameter param) => 
         param.IncludeIat != default || param.Exp.RepresentKeyTime() || param.Nbf.RepresentKeyTime();
 }

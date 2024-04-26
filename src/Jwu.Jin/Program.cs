@@ -23,43 +23,41 @@ if (command != "Create")
     return;
 }
 
-CreateJwkParameter? param;
+CreateJwkParameter param = new();
 
 if (args.Length == 2)
 {
     var jsonPath = args[1];
     var json = File.ReadAllText(jsonPath);
-    param = JsonSerializer.Deserialize<CreateJwkParameter>(json);    
-}
-else
-{
-    param = new();
+    var deserialized = JsonSerializer.Deserialize<CreateJwkParameter>(json);
+    if (deserialized == null)
+    {
+        Console.WriteLine("Failed to parse json");
+        return;
+    }
+
+    param = deserialized;
 }
 
-
-if (param == null)
-{
-    Console.WriteLine("Could not deserialize json from: " + jsonPath);
-    return;
-}
+var jso = new JsonSerializerOptions { WriteIndented = true };
 
 switch (command)
 {     case "Create":
         var (priv, pub) = JwkMethods.CreateKeys(param, param.Number);
-        var privJson = JsonSerializer.Serialize(priv, new JsonSerializerOptions { WriteIndented = param.PrettyJson == KeyPart.Private });
-        var pubJson = JsonSerializer.Serialize(pub, new JsonSerializerOptions { WriteIndented = param.PrettyJson == KeyPart.Public });
+        var privJson = JsonSerializer.Serialize(priv, jso);
+        var pubJson = JsonSerializer.Serialize(pub, jso);
 
-        if (param.ForceSingle == KeyPart.None)
+        if (param.PrivateKeysOutputFilePath != null)
         {
-            File.WriteAllText("private.json", privJson);
-            File.WriteAllText("public.json", pubJson);
+            File.WriteAllText(param.PrivateKeysOutputFilePath, privJson);
         }
-        else
+        if (param.PublicKeysOutputFilePath != null)
         {
-            File.WriteAllText("key.json", privJson);
+            File.WriteAllText(param.PublicKeysOutputFilePath, pubJson);
         }
         break;
     default:
         Console.WriteLine("Unknown command: " + command);
         break;
 }
+
